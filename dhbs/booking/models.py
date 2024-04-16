@@ -2,7 +2,7 @@ from django.db import models
 
 # Create your models here.
 class booking(models.Model):
-    booking_id = models.AutoField(primary_key=True)
+    booking_id = models.IntegerField(unique=True)
     guest_id = models.IntegerField()
     full_name = models.CharField(max_length=100)
     room_number = models.IntegerField()

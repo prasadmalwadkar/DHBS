@@ -80,7 +80,7 @@ DATABASES = {
         'ENGINE': 'djongo',
         'NAME': 'default',
         'CLIENT': {
-            'host': 'mongodb://localhost:27017/standard'
+            'host': 'mongodb://localhost:27017/default'
         },
         'ENFORCE_SCHEMA': False
     },

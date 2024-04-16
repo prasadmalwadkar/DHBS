@@ -6,6 +6,7 @@ from django.db.models import F
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from .models import booking
+from django.db.models import Count, Sum, Avg
 
 
 
@@ -178,11 +179,11 @@ def user_details(request, pk):
 
     return render(request, 'booking/user_details.html', params)
 
-def booking_analysis(request, pk):
+def analysis(request, pk):
     guest_id = pk
 
     # Retrieve guest bookings from either 'even' or 'odd' database based on guest_id
-    guest_bookings = Booking.objects.using('even' if pk % 2 == 0 else 'odd').filter(guest_id=guest_id)
+    guest_bookings = booking.objects.using('even' if pk % 2 == 0 else 'odd').filter(guest_id=guest_id)
 
     # Aggregate data to gain insights
     room_type_counts = guest_bookings.values('room_type').annotate(total=Count('room_type')).order_by('-total')
@@ -292,20 +293,27 @@ def add(request):
     return render(request, 'booking/add.html')
 
 def delete(request):
-    if request.method == "POST":
-        guest_id = request.POST.get('guest_id')
-
-        if int(guest_id) % 2 == 0:
-            bookings = booking.objects.using('even').filter(guest_id=guest_id)
-        else:
-            bookings = booking.objects.using('odd').filter(guest_id=guest_id)
-
-        # Delete all bookings for the specified guest_id
-        for booking in bookings:
-            booking.delete()
-
-        return redirect('manager_view')
+    if request.method == 'POST':
+        booking_id = request.POST.get('booking_id')
+        print (booking_id)
+        if booking_id:
+            try:
+                # Check both databases for the booking
+                booking_even = booking.objects.using('even').get(booking_id=booking_id)
+                booking_odd = booking.objects.using('odd').get(booking_id=booking_id)
+                
+                # Delete the booking from both databases
+                booking_even.delete()
+                booking_odd.delete()
+                
+                # Redirect to a success page or display a success message
+                return HttpResponse("Booking deleted successfully")
+            except booking.DoesNotExist:
+                return HttpResponse("Booking not found")
+    
+    # If method is not POST or booking_id is not provided, render the delete.html template
     return render(request, 'booking/delete.html')
+
 
 
 #def update(request):
