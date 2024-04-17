@@ -7,6 +7,8 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from .models import booking
 from django.db.models import Count, Sum, Avg
+from django.contrib import messages
+from django.db import DatabaseError
 
 
 
@@ -251,8 +253,51 @@ def analysis(request, pk):
 #    return float(bmi)
 
 
+#def add(request):
+#    if request.method == "POST":
+#        guest_id = request.POST.get('guest_id')
+#        full_name = request.POST.get('full_name')
+#        room_number = request.POST.get('room_number')
+#        room_type = request.POST.get('room_type')
+#        check_in_date = request.POST.get('check_in_date')
+#        check_out_date = request.POST.get('check_out_date')
+#        price_per_night = request.POST.get('price_per_night')
+#        total_cost = request.POST.get('total_cost')
+#
+#        database = 'odd' if int(guest_id) % 2 != 0 else 'even'
+#
+#        new_booking = booking(
+#            guest_id=guest_id,
+#            full_name=full_name,
+#            room_number=room_number,
+#            room_type=room_type,
+#            check_in_date=check_in_date,
+#            check_out_date=check_out_date,
+#            price_per_night=price_per_night,
+#            total_cost=total_cost
+#        )
+#        new_booking.save(using=database)
+#
+#        print(f"""
+#        Guest ID: {guest_id}
+#        Full Name: {full_name}
+#        Room Number: {room_number}
+#        Room Type: {room_type}
+#        Check-in Date: {check_in_date}
+#        Check-out Date: {check_out_date}
+#        Price per Night: {price_per_night}
+#        Total Cost: {total_cost}
+#        Database: {database}
+#        """)
+#
+#        return redirect('manager_view')
+#
+#    return render(request, 'booking/add.html')
+
+
 def add(request):
     if request.method == "POST":
+        booking_id = request.POST.get('booking_id')
         guest_id = request.POST.get('guest_id')
         full_name = request.POST.get('full_name')
         room_number = request.POST.get('room_number')
@@ -262,58 +307,85 @@ def add(request):
         price_per_night = request.POST.get('price_per_night')
         total_cost = request.POST.get('total_cost')
 
-        database = 'odd' if int(guest_id) % 2 != 0 else 'even'
+        if not booking_id:
+            # If booking ID is not provided, display error message
+            messages.error(request, 'Booking ID is required')
+            return render(request, 'booking/add.html')
 
-        new_booking = booking(
-            guest_id=guest_id,
-            full_name=full_name,
-            room_number=room_number,
-            room_type=room_type,
-            check_in_date=check_in_date,
-            check_out_date=check_out_date,
-            price_per_night=price_per_night,
-            total_cost=total_cost
-        )
-        new_booking.save(using=database)
+        try:
+            # Check if the booking_id already exists in either database
+            booking_id = int(booking_id)
+            #print (type(booking_id))
+            booking_exists_even = booking.objects.using('even').filter(booking_id=booking_id).count() 
+            booking_exists_odd = booking.objects.using('odd').filter(booking_id=booking_id).count()
+            #print (booking_exists_even)
+            #print (booking_exists_odd)
+            if booking_exists_even > 0 or booking_exists_odd > 0:
+                # Booking ID already exists, display error message
+                messages.error(request, f'Booking ID {booking_id} already exists')
+                return render(request, 'booking/add.html')
 
-        print(f"""
-        Guest ID: {guest_id}
-        Full Name: {full_name}
-        Room Number: {room_number}
-        Room Type: {room_type}
-        Check-in Date: {check_in_date}
-        Check-out Date: {check_out_date}
-        Price per Night: {price_per_night}
-        Total Cost: {total_cost}
-        Database: {database}
-        """)
+            else:
+                database = 'odd' if int(guest_id) % 2 != 0 else 'even'
 
-        return redirect('manager_view')
+                new_booking = booking(
+                    booking_id=booking_id,
+                    guest_id=guest_id,
+                    full_name=full_name,
+                    room_number=room_number,
+                    room_type=room_type,
+                    check_in_date=check_in_date,
+                    check_out_date=check_out_date,
+                    price_per_night=price_per_night,
+                    total_cost=total_cost
+                )
+                new_booking.save(using=database)
+
+                print(f"""
+                Booking ID: {booking_id}
+                Guest ID: {guest_id}
+                Full Name: {full_name}
+                Room Number: {room_number}
+                Room Type: {room_type}
+                Check-in Date: {check_in_date}
+                Check-out Date: {check_out_date}
+                Price per Night: {price_per_night}
+                Total Cost: {total_cost}
+                Database: {database}
+                """)
+
+                # Set success message
+                messages.success(request, 'Booking added successfully')
+                return redirect('manager_view')
+        except:
+            print ('error')
+        #except DatabaseError as e:
+        #    # Handle database errors
+        #    messages.error(request, f'Database error: {str(e)}')
+        #    return render(request, 'booking/add.html')
 
     return render(request, 'booking/add.html')
+
 
 def delete(request):
     if request.method == 'POST':
         booking_id = request.POST.get('booking_id')
-        print (booking_id)
         if booking_id:
-            try:
-                # Check both databases for the booking
-                booking_even = booking.objects.using('even').get(booking_id=booking_id)
-                booking_odd = booking.objects.using('odd').get(booking_id=booking_id)
+            # Delete the booking from even database
+            deleted_even = booking.objects.using('even').filter(booking_id=booking_id).delete()
+            # Delete the booking from odd database
+            deleted_odd = booking.objects.using('odd').filter(booking_id=booking_id).delete()
+            if deleted_even[0] > 0 or deleted_odd[0] > 0:
+                # At least one booking was deleted
+                messages.success(request, 'Booking deleted successfully')
+            else:
+                # No booking was deleted
+                messages.error(request, 'Booking not found')
                 
-                # Delete the booking from both databases
-                booking_even.delete()
-                booking_odd.delete()
-                
-                # Redirect to a success page or display a success message
-                return HttpResponse("Booking deleted successfully")
-            except booking.DoesNotExist:
-                return HttpResponse("Booking not found")
-    
-    # If method is not POST or booking_id is not provided, render the delete.html template
-    return render(request, 'booking/delete.html')
 
+    
+    # Render the delete page
+    return render(request, 'booking/delete.html')
 
 
 #def update(request):

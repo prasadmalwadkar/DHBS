@@ -71,6 +71,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'dhbs.wsgi.application'
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
