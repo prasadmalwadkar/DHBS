@@ -116,7 +116,7 @@ def analysis(request):
     revenue_per_month = defaultdict(float)
     for booking_item in all_bookings:
         month_year = booking_item.check_in_date.strftime('%B %Y')
-        revenue_per_month[month_year] += float(Decimal(str(booking_item.total_cost)))
+        revenue_per_month[month_year] += float(str(booking_item.total_cost))
 
     # Calculate counts of guest_ids in each database
     guest_id_counts = {

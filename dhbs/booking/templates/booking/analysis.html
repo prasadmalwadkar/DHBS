@@ -127,7 +127,7 @@
 
         var guestIdCountsChartCtx = document.getElementById('guestIdCountsChart').getContext('2d');
         var guestIdCountsChart = new Chart(guestIdCountsChartCtx, {
-            type: 'horizontalBar',
+            type: 'bar',
             data: {
                 labels: guestIdCountsLabels,
                 datasets: [{
@@ -140,7 +140,7 @@
             },
             options: {
                 scales: {
-                    x: {
+                    y: {
                         beginAtZero: true
                     }
                 }
