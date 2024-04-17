@@ -24,7 +24,6 @@ from booking import views
 
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
-    # path('patients/<int:patient_id>/', views.patient_detail, name='patient-detail'),
     path('',views.home,name='home'),
     path('manager_view/',views.manager_view,name='manager_view'),
     path('user_view',views.user_view,name="user_view"),

@@ -5,16 +5,15 @@ from pymongo import MongoClient
 from datetime import datetime
 
 # Function to convert Excel serial date to Python datetime
-#def excel_to_datetime(excel_date_num):
-#    return datetime.fromordinal(datetime(1900, 1, 1).toordinal() + int(excel_date_num) - 2)
+def json_to_datetime(excel_date_num):
+   return datetime.fromordinal(datetime(1900, 1, 1).toordinal() + int(excel_date_num) - 2)
 
-def json_to_datetime(json_date):
-    try:
-        # Assuming JSON date format is "mm/dd/yyyy"
-        return datetime.strptime(json_date, "%m/%d/%Y")
-    except ValueError:
-        # Handle invalid date formats
-        return None
+# def json_to_datetime(json_date):
+#     try:
+#         dt = datetime.strptime(json_date, "%m/%d/%y")
+#         return dt.strftime("%B %d, %Y")
+#     except ValueError:
+#         return None
 
 def run():
     """
@@ -22,7 +21,7 @@ def run():
     """
     booking.objects.using('even').delete()
     booking.objects.using('odd').delete()
-    with open("Specific_Guest_Bookings.json", 'r') as file:
+    with open("HotelBookings.json", 'r') as file:
         data = json.load(file)['Sheet1'] 
 
         for item in data[:30]:
