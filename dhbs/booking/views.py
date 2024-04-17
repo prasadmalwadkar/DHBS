@@ -89,10 +89,11 @@ def user_view(request):
 def user_details(request, pk):
     # Fetch all bookings for the particular guest ID (pk)
     bookings = booking.objects.using('even' if pk % 2 == 0 else 'odd').filter(guest_id=pk)
+    bookings_sorted = sorted(bookings, key=lambda booking: booking.check_in_date, reverse=True)
 
     user = pk
 
-    params = {'user': user, 'bookings': bookings}
+    params = {'user': user, 'bookings': bookings_sorted}
 
     return render(request, 'booking/user_details.html', params)
 
@@ -259,61 +260,5 @@ def delete(request):
     return render(request, 'booking/delete.html')
 
 
-#def update(request):
-#    if request.method == "POST":
-#        patient_id = request.POST.get('patient_id')
-#        patient = Patient.objects.using('db2' if int(patient_id) % 2 == 0 else "db1").filter(patient_id=patient_id).get()
-#        Patient.objects.using('db2' if int(patient_id) % 2 == 0 else "db1").filter(patient_id=patient_id).delete()
-#
-#        name = request.POST.get('name')
-#        age = request.POST.get('age')
-#        gender = request.POST.get('gender')
-#        height = request.POST.get('height')
-#        weight = request.POST.get('weight')
-#        blood_type = request.POST.get('blood_type')
-#        blood_pressure = request.POST.get('blood_pressure')
-#        oxygen_level = request.POST.get('oxygen_level')
-#        blood_sugar = request.POST.get('blood_sugar')
-#        heart_rate = request.POST.get('heart_rate')
-#        cholesterol = request.POST.get('cholesterol')
-#        body_temperature = request.POST.get('body_temperature')
-#        sleep_hours = request.POST.get('sleep_hours')
-#        stress_level = request.POST.get('stress_level')
-#
-#        # Updating fields if provided
-#        if name:
-#            patient.name = name
-#        if age:
-#            patient.age = age
-#        if gender:
-#            patient.gender = gender
-#        if height:
-#            patient.height = height
-#        if weight:
-#            patient.weight = weight
-#        if blood_type:
-#            patient.blood_type = blood_type
-#        if blood_pressure:
-#            patient.blood_pressure = blood_pressure
-#        if oxygen_level:
-#            patient.oxygen_level = oxygen_level
-#        if blood_sugar:
-#            patient.blood_sugar = blood_sugar
-#        if heart_rate:
-#            patient.heart_rate = heart_rate
-#        if cholesterol:
-#            patient.cholesterol = cholesterol
-#        if body_temperature:
-#            patient.body_temperature = body_temperature
-#        if sleep_hours:
-#            patient.sleep_hours = sleep_hours
-#        if stress_level:
-#            patient.stress_level = stress_level
-#
-#
-#        patient.save()
-#
-#        return redirect('manager_view')
-#
-#    params = {}
-#    return render(request, 'insights/update.html', params)
+
+

@@ -2,11 +2,11 @@ import json
 from django.conf import settings
 from booking.models import booking
 from pymongo import MongoClient
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Function to convert Excel serial date to Python datetime
 def json_to_datetime(excel_date_num):
-   return datetime.fromordinal(datetime(1900, 1, 1).toordinal() + int(excel_date_num) - 2)
+    return datetime.fromordinal(datetime(1900, 1, 1).toordinal() + int(excel_date_num) - 2)
 
 # def json_to_datetime(json_date):
 #     try:
@@ -21,10 +21,10 @@ def run():
     """
     booking.objects.using('even').delete()
     booking.objects.using('odd').delete()
-    with open("HotelBookings.json", 'r') as file:
+    with open("dataset.json", 'r') as file:
         data = json.load(file)['Sheet1'] 
 
-        for item in data[:30]:
+        for item in data:
             guest_id = item['guest_id']
             
             database = 'even' if int(guest_id) % 2 == 0 else 'odd'

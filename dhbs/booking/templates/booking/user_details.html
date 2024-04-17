@@ -14,7 +14,7 @@
         background-repeat: no-repeat;
         background-attachment: fixed;
         background-position: center;
-    }
+  }
     .container {
         margin-top: 50px;
         margin-bottom: 150px; /* Add bottom margin to create space for the footer */
@@ -24,10 +24,40 @@
         border-radius: 10px;
         /box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);/
     }
+    .navbar {
+        padding: 10px 15px;
+        background-color: rgba(52, 58, 64, 0.8); 
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .navbar-brand, .nav-link {
+        color: #fff; 
+    }
+    .navbar-brand:hover, .nav-link:hover {
+        color: #ccc;
+        }
+
+    
    
   
   </style>
-  
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">Hotel Management System</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'user_view' %}">User View</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'manager_view' %}">Manager View</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
 
   <div class="container">
     <h4>Booking Details for Guest ID: {{ user }}</h4>
