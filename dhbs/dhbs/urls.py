@@ -31,7 +31,8 @@ urlpatterns = [
     path('analysis/<int:pk>',views.analysis,name = "analysis"),
     path('add/',views.add,name = "add"),
     path('delete/', views.delete, name='delete'),
-    path('guestlist/', views.guestlist, name='guestlist')
+    path('guestlist/', views.guestlist, name='guestlist'),
+    path('analysis/',views.analysis,name='analysis')
  #   path('update/',views.update,name = "update"),
 
 

@@ -9,6 +9,10 @@ from .models import booking
 from django.db.models import Count, Sum, Avg
 from django.contrib import messages
 from django.db import DatabaseError
+from itertools import chain
+from decimal import Decimal
+from collections import defaultdict
+from datetime import datetime
 
 
 
@@ -92,31 +96,53 @@ def user_details(request, pk):
 
     return render(request, 'booking/user_details.html', params)
 
-def analysis(request, pk):
-    guest_id = pk
 
-    # Retrieve guest bookings from either 'even' or 'odd' database based on guest_id
-    guest_bookings = booking.objects.using('even' if pk % 2 == 0 else 'odd').filter(guest_id=guest_id)
 
-    # Aggregate data to gain insights
-    room_type_counts = guest_bookings.values('room_type').annotate(total=Count('room_type')).order_by('-total')
-    total_spent = guest_bookings.aggregate(total_spent=Sum('total_cost'))['total_spent']
-    average_spent_per_night = guest_bookings.aggregate(avg_price=Avg('price_per_night'))['avg_price']
-    booking_frequencies = guest_bookings.dates('check_in_date', 'month', order='DESC').annotate(count=Count('id'))
+
+def analysis(request):
+    # Retrieve all bookings from both 'odd' and 'even' databases
+    bookings_odd = booking.objects.using('odd')
+    bookings_even = booking.objects.using('even')
+
+    # Aggregate data for odd and even databases separately
+    all_bookings = list(bookings_odd) + list(bookings_even)
+
+    # Calculate room type counts
+    room_type_counts = defaultdict(int)
+    for booking_item in all_bookings:
+        room_type_counts[booking_item.room_type] += 1
+
+    # Calculate total revenue per month
+    revenue_per_month = defaultdict(float)
+    for booking_item in all_bookings:
+        month_year = booking_item.check_in_date.strftime('%B %Y')
+        revenue_per_month[month_year] += float(Decimal(str(booking_item.total_cost)))
+
+    # Calculate counts of guest_ids in each database
+    guest_id_counts = {
+        'odd': bookings_odd.count(),
+        'even': bookings_even.count()
+    }
+
+    # Calculate booking frequencies
+    booking_frequencies = defaultdict(int)
+    for booking_item in all_bookings:
+        month_year = booking_item.check_in_date.strftime('%B %Y')
+        booking_frequencies[month_year] += 1
 
     charts_data = [
-        {'attribute': 'room_type', 'label': 'Room Type Preference', 'data': list(room_type_counts)},
-        {'attribute': 'total_spent', 'label': 'Total Spent ($)', 'value': total_spent},
-        {'attribute': 'avg_price_per_night', 'label': 'Average Price Per Night ($)', 'value': average_spent_per_night},
-        {'attribute': 'booking_frequency', 'label': 'Booking Frequency Over Time', 'data': list(booking_frequencies)}
+        {'attribute': 'room_type', 'label': 'Room Type Preference', 'data': dict(room_type_counts)},
+        {'attribute': 'revenue_per_month', 'label': 'Total Revenue Per Month', 'data': dict(revenue_per_month)},
+        {'attribute': 'guest_id_counts', 'label': 'Guest ID Counts by Database', 'data': guest_id_counts},
+        {'attribute': 'booking_frequency', 'label': 'Booking Frequency Over Time', 'data': dict(booking_frequencies)}
     ]
 
     context = {
-        'guest_id': guest_id,
         'charts_data': charts_data
     }
 
     return render(request, 'booking/analysis.html', context)
+
 
 def guestlist(request):
     if 'search_query' in request.GET:

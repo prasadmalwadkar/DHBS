@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest Analysis</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <style>
+        .chart-container {
+            padding: 20px;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Guest Analysis</h1>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h2>Room Type Preference</h2>
+                    <canvas id="roomTypeChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h2>Total Revenue Per Month</h2>
+                    <canvas id="revenuePerMonthChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h2>Guest ID Counts by Database</h2>
+                    <canvas id="guestIdCountsChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h2>Booking Frequency Over Time</h2>
+                    <canvas id="bookingFrequencyChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Room Type Chart
+        var roomTypeData = {{ charts_data.0.data|safe }};
+        var roomTypeLabels = Object.keys(roomTypeData);
+        var roomTypeCounts = Object.values(roomTypeData);
+
+        var roomTypeChartCtx = document.getElementById('roomTypeChart').getContext('2d');
+        var roomTypeChart = new Chart(roomTypeChartCtx, {
+            type: 'pie',
+            data: {
+                labels: roomTypeLabels,
+                datasets: [{
+                    label: 'Room Type Count',
+                    data: roomTypeCounts,
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.6)',
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(255, 206, 86, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)',
+                        'rgba(255, 159, 64, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Revenue Per Month Chart
+        var revenuePerMonthData = {{ charts_data.1.data|safe }};
+        var revenuePerMonthLabels = Object.keys(revenuePerMonthData);
+        var revenuePerMonthValues = Object.values(revenuePerMonthData);
+
+        var revenuePerMonthChartCtx = document.getElementById('revenuePerMonthChart').getContext('2d');
+        var revenuePerMonthChart = new Chart(revenuePerMonthChartCtx, {
+            type: 'bar',
+            data: {
+                labels: revenuePerMonthLabels,
+                datasets: [{
+                    label: 'Total Revenue',
+                    data: revenuePerMonthValues,
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Guest ID Counts by Database Chart
+        var guestIdCountsData = {{ charts_data.2.data|safe }};
+        var guestIdCountsLabels = Object.keys(guestIdCountsData);
+        var guestIdCountsValues = Object.values(guestIdCountsData);
+
+        var guestIdCountsChartCtx = document.getElementById('guestIdCountsChart').getContext('2d');
+        var guestIdCountsChart = new Chart(guestIdCountsChartCtx, {
+            type: 'horizontalBar',
+            data: {
+                labels: guestIdCountsLabels,
+                datasets: [{
+                    label: 'Guest ID Counts',
+                    data: guestIdCountsValues,
+                    backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Booking Frequency Chart
+        var bookingFrequencyData = {{ charts_data.3.data|safe }};
+        var bookingFrequencyLabels = Object.keys(bookingFrequencyData).sort();
+        var bookingFrequencyCounts = Object.values(bookingFrequencyData);
+
+        var bookingFrequencyChartCtx = document.getElementById('bookingFrequencyChart').getContext('2d');
+        var bookingFrequencyChart = new Chart(bookingFrequencyChartCtx, {
+            type: 'line',
+            data: {
+                labels: bookingFrequencyLabels,
+                datasets: [{
+                    label: 'Booking Frequency',
+                    data: bookingFrequencyCounts,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
