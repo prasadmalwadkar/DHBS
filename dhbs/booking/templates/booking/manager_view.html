@@ -105,64 +105,113 @@
 
 
 <!--count graph start-->
-    <div class="chart-container px-4" style="width:350px">
-        <canvas id="dbCountChart"></canvas>
+<div class="container">
+  <div class="row">
+      <!-- Pie Chart -->
+      <div class="col-lg-6">
+          <div class="chart-container px-4" style="width: 100%; max-width: 500px;">
+              <canvas id="dbCountChart"></canvas>
+          </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="chart-container px-4" style="width: 100%; max-width: 500px;">
+            <canvas id="histogramChart"></canvas>
+        </div>
     </div>
+</div>
+</div>
 
-    <script>
-      <!--count graph-->
-      document.addEventListener('DOMContentLoaded', function () {
-          const ctx = document.getElementById('dbCountChart').getContext('2d');
-          const dbCountChart = new Chart(ctx, {
-              type: 'doughnut',
-              data: {
-                  labels: ['Database 1', 'Database 2'],
-                  datasets: [{
-                      data: [{{ db1_count }}, {{ db2_count }}],
-                       backgroundColor: [
-                          '#FF8000',  // Orange
-                          '#0000FF'   // Blue
-                      ],
-                      borderColor: [
-                          '#FF8000',  // Orange border
-                          '#0000FF'   // Blue border
-                      ],
-                      borderWidth: 1
-                  }]
-              },
-              options: {
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  cutoutPercentage: 70,
-                  plugins: {
-                      datalabels: {
-                          color: '#000',
-                          textAlign: 'center',
-                          font: {
-                              weight: 'bold',
-                              size: 13
-                          },
-                          formatter: (value, ctx) => {
-                              return ctx.chart.data.labels[ctx.dataIndex] + '\n' + value;
-                          }
-                      },
-                      tooltip: {
-                          callbacks: {
-                              label: function(tooltipItem) {
-                                  return `${tooltipItem.label}: ${tooltipItem.raw}`;
-                              }
-                          }
-                      }
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Doughnut chart data
+    const doughnutData = {
+        labels: ['Odd Guest_id\'s', 'Even Guest_id\'s'],
+        datasets: [{
+            data: [{{ db1_count }}, {{ db2_count }}],
+            backgroundColor: ['#FF8000', '#0000FF'],
+            borderColor: ['#FF8000', '#0000FF'],
+            borderWidth: 1
+        }]
+    };
+  
+    // Doughnut chart configuration
+    const doughnutConfig = {
+        type: 'doughnut',
+        data: doughnutData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutoutPercentage: 70,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return `${tooltipItem.label}: ${tooltipItem.raw}`;
+                        }
+                    }
+                }
+            }
+        }
+    };
+  
+    // Create and render the doughnut chart
+    const doughnutCtx = document.getElementById('dbCountChart').getContext('2d');
+    const dbCountChart = new Chart(doughnutCtx, doughnutConfig);
+  });
+  </script>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // Histogram data
+  const histogramData = {
+      labels: ['Deluxe', 'Standard', 'Suite'],
+      datasets: [{
+          label: 'Room Type Count',
+          backgroundColor: ['#FFA500', '#FF5733', '#FFC300'],
+          borderColor: ['#FFA500', '#FF5733', '#FFC300'],
+          borderWidth: 1,
+          data: [{{ Deluxe_count }}, {{ Standard_count }}, {{ Suite_count }}]
+      }]
+  };
+
+  // Histogram configuration
+  const histogramConfig = {
+      type: 'bar',
+      data: histogramData,
+      options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      beginAtZero: true
+                  },
+                  scaleLabel: {
+                      display: true,
+                      labelString: 'Count'
                   }
-              },
-              plugins: [ChartDataLabels]
-          });
-      });
-      
-      
+              }],
+              xAxes: [{
+                  scaleLabel: {
+                      display: true,
+                      labelString: 'Room Type'
+                  }
+              }]
+          }
+      }
+  };
 
-      </script>
-<br>
+  // Create and render the histogram chart
+  const histogramCtx = document.getElementById('histogramChart').getContext('2d');
+  const histogramChart = new Chart(histogramCtx, histogramConfig);
+});
+</script>
 
 <br>
 
@@ -187,6 +236,18 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-md-3 mb-4">
+          <div class="card" style="width: 100%;">
+              <img src="https://www.simplilearn.com/ice9/free_resources_article_thumb/What_is_Data_Types_of_Data_and_How_To_Analyze_Data.jpg" class="card-img-top" alt="Data Storage">
+              <div class="card-body">
+                  <h5 class="card-title">Click here to Show all the guests</h5>
+                  <a href="{% url 'guestlist' %}" class="btn btn-primary" role="button">Guest List</a>
+              </div>
+          </div>
+      </div>
+
+
 
     </div>
 </div>

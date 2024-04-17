@@ -24,51 +24,13 @@
         border-radius: 10px;
         /box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);/
     }
-    .footer {
-        /position: fixed; / Change position to absolute */
-        /*left: 0;
-        bottom: 0;*/
-        width: 100%;
-        background-color: #343a40; /* Dark grey background color */
-        color: #ccc; /* White text color */
-        padding: 20px 0;
-    }
-    .footer h5 {
-        font-size: 18px;
-        color: #ccc;
-        margin-bottom: 20px;
-    }
-    .footer p {
-        font-size: 14px;
-        color: #ccc;
-        margin-bottom: 10px;
-    }
-    .footer .list-unstyled a {
-        color: #ccc;
-        text-decoration: none;
-        transition: color 0.3s ease;
-    }
-    .footer .list-unstyled a:hover {
-        color: #fff;
-    }
-    .footer .lead-sm {
-        font-size: 14px;
-        color: #ccc;
-        margin-bottom: 10px;
-    }
-    /* Override container styles for the footer */
-    .footer .container {
-        background-color: transparent;
-        margin-bottom: 15px;
-        padding: 0;
-    }
-  
+   
   
   </style>
   
 
   <div class="container">
-    <h4>Booking Details for Guest ID: {{ user.guest_id }}</h4>
+    <h4>Booking Details for Guest ID: {{ user }}</h4>
     <table class="table table-striped">
         <thead>
             <tr>

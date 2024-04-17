@@ -47,6 +47,9 @@ def manager_view(request):
     Standard_count_db2 = booking.objects.using('even').filter(room_type='Standard').count()
     Standard_count = Standard_count_db1 + Standard_count_db2
 
+    Suite_count_db1 = booking.objects.using('odd').filter(room_type='Suite').count()
+    Suite_count_db2 = booking.objects.using('even').filter(room_type='Suite').count()
+    Suite_count = Suite_count_db1 + Suite_count_db2
    
     db1_count = booking.objects.using('odd').count()
     db2_count = booking.objects.using('even').count()
@@ -60,6 +63,7 @@ def manager_view(request):
             'count':count,
             'Deluxe_count':Deluxe_count,
             'Standard_count': Standard_count,
+            'Suite_count': Suite_count,
             'db1_count': db1_count,
             'db2_count': db2_count,
            
@@ -82,7 +86,9 @@ def user_details(request, pk):
     # Fetch all bookings for the particular guest ID (pk)
     bookings = booking.objects.using('even' if pk % 2 == 0 else 'odd').filter(guest_id=pk)
 
-    params = {'bookings': bookings}
+    user = pk
+
+    params = {'user': user, 'bookings': bookings}
 
     return render(request, 'booking/user_details.html', params)
 
@@ -111,6 +117,25 @@ def analysis(request, pk):
     }
 
     return render(request, 'booking/analysis.html', context)
+
+def guestlist(request):
+    if 'search_query' in request.GET:
+        search_query = request.GET['search_query']
+        bookings_odd = booking.objects.using('odd').filter(full_name__icontains=search_query)
+        bookings_even = booking.objects.using('even').filter(full_name__icontains=search_query)
+        all_bookings = list(bookings_odd) + list(bookings_even)
+        all_bookings_sorted = sorted(all_bookings, key=lambda booking: booking.check_in_date, reverse=True)
+    else:
+        bookings_odd = booking.objects.using('odd').all()
+        bookings_even = booking.objects.using('even').all()
+        all_bookings = list(bookings_odd) + list(bookings_even)
+        all_bookings_sorted = sorted(all_bookings, key=lambda booking: booking.check_in_date, reverse=True)
+
+    return render(request, 'booking/guestlist.html', {'bookings': all_bookings_sorted})
+
+
+
+
 
 
 

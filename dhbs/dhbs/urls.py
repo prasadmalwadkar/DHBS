@@ -30,7 +30,8 @@ urlpatterns = [
     path('user_details/<int:pk>',views.user_details,name="user_details"),
     path('analysis/<int:pk>',views.analysis,name = "analysis"),
     path('add/',views.add,name = "add"),
-    path('delete/', views.delete, name='delete')
+    path('delete/', views.delete, name='delete'),
+    path('guestlist/', views.guestlist, name='guestlist')
  #   path('update/',views.update,name = "update"),
 
 

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guest List</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <a class="navbar-brand" href="{% url 'guestlist' %}">Guest List</a>
+    <br>
+    <br>
+    <form method="GET" action="{% url 'guestlist' %}">
+        <input type="text" name="search_query" placeholder="Search by Guest Name">
+        <button type="submit">Search</button>
+    </form>
+    <br>
+    <div class="container">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Booking ID</th>
+                    <th scope="col">Full Name</th>
+                    <th scope="col">Room Number</th>
+                    <th scope="col">Room Type</th>
+                    <th scope="col">Check-in Date</th>
+                    <th scope="col">Check-out Date</th>
+                    <th scope="col">Price per Night</th>
+                    <th scope="col">Total Cost</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ booking.booking_id }}</td>
+                    <td>{{ booking.full_name }}</td>
+                    <td>{{ booking.room_number }}</td>
+                    <td>{{ booking.room_type }}</td>
+                    <td>{{ booking.check_in_date }}</td>
+                    <td>{{ booking.check_out_date }}</td>
+                    <td>{{ booking.price_per_night }}</td>
+                    <td>{{ booking.total_cost }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="9">No bookings found for this guest ID.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+</body>
+</html>
+
