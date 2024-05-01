@@ -47,4 +47,3 @@ def run():
             new_booking = booking.objects.using(database).create(**booking_record)
             print(f'Added booking for guest {new_booking.full_name} to database {database}')
 
-# Note: Ensure the 'booking' model and the JSON file's keys match exactly with the model fields.
