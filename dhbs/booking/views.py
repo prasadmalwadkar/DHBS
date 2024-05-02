@@ -87,7 +87,7 @@ def user_view(request):
 
 
 def user_details(request, pk):
-    # Fetch all bookings for the particular guest ID (pk)
+
     bookings = booking.objects.using('even' if pk % 2 == 0 else 'odd').filter(guest_id=pk)
     bookings_sorted = sorted(bookings, key=lambda booking: booking.check_in_date, reverse=True)
 

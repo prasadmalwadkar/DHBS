@@ -127,7 +127,7 @@
             }
         });
 
-        // Revenue Per Month Chart
+       
         var revenuePerMonthData = {{ charts_data.1.data|safe }};
         var revenuePerMonthLabels = Object.keys(revenuePerMonthData);
         var revenuePerMonthValues = Object.values(revenuePerMonthData);
@@ -154,7 +154,7 @@
             }
         });
 
-        // Guest ID Counts by Database Chart
+        
         var guestIdCountsData = {{ charts_data.2.data|safe }};
         var guestIdCountsLabels = Object.keys(guestIdCountsData);
         var guestIdCountsValues = Object.values(guestIdCountsData);
@@ -181,7 +181,7 @@
             }
         });
 
-        // Booking Frequency Chart
+        
         var bookingFrequencyData = {{ charts_data.3.data|safe }};
         var bookingFrequencyLabels = Object.keys(bookingFrequencyData).sort();
         var bookingFrequencyCounts = Object.values(bookingFrequencyData);

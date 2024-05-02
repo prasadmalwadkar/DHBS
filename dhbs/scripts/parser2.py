@@ -29,7 +29,7 @@ def run():
             
             database = 'even' if int(guest_id) % 2 == 0 else 'odd'
 
-            #booking.objects.using(database).filter(guest_id=guest_id).delete()
+          
             
             booking_record = {
                 'booking_id': item['booking_id'],

@@ -18,7 +18,6 @@ from django.urls import path, re_path, include
 from django.contrib import admin
 
 from django.urls import path
-# from insights import views
 from booking import views
 
 
@@ -33,7 +32,7 @@ urlpatterns = [
     path('delete/', views.delete, name='delete'),
     path('guestlist/', views.guestlist, name='guestlist'),
     path('analysis/',views.analysis,name='analysis')
- #   path('update/',views.update,name = "update"),
+
 
 
 
