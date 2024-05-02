@@ -21,7 +21,7 @@ def run():
     """
     booking.objects.using('even').delete()
     booking.objects.using('odd').delete()
-    with open("Complete_Booking_Dataset.json", 'r') as file:
+    with open("dataset.json", 'r') as file:
         data = json.load(file)['Sheet1'] 
 
         for item in data:
