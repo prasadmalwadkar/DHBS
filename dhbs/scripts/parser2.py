@@ -21,6 +21,7 @@ def run():
     """
     booking.objects.using('even').delete()
     booking.objects.using('odd').delete()
+    
     with open("dataset.json", 'r') as file:
         data = json.load(file)['Sheet1'] 
 
@@ -28,8 +29,6 @@ def run():
             guest_id = item['guest_id']
             
             database = 'even' if int(guest_id) % 2 == 0 else 'odd'
-
-          
             
             booking_record = {
                 'booking_id': item['booking_id'],

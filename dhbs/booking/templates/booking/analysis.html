@@ -127,10 +127,9 @@
             }
         });
 
-       
         var revenuePerMonthData = {{ charts_data.1.data|safe }};
-        var revenuePerMonthLabels = Object.keys(revenuePerMonthData);
-        var revenuePerMonthValues = Object.values(revenuePerMonthData);
+        var revenuePerMonthLabels = Object.keys(revenuePerMonthData).sort((a, b) => new Date(a) - new Date(b));
+        var revenuePerMonthValues = revenuePerMonthLabels.map(label => revenuePerMonthData[label]);
 
         var revenuePerMonthChartCtx = document.getElementById('revenuePerMonthChart').getContext('2d');
         var revenuePerMonthChart = new Chart(revenuePerMonthChartCtx, {
@@ -150,8 +149,8 @@
                     y: {
                         beginAtZero: true
                     }
-                }
-            }
+                }
+            }
         });
 
         
@@ -181,10 +180,9 @@
             }
         });
 
-        
         var bookingFrequencyData = {{ charts_data.3.data|safe }};
-        var bookingFrequencyLabels = Object.keys(bookingFrequencyData).sort();
-        var bookingFrequencyCounts = Object.values(bookingFrequencyData);
+        var bookingFrequencyLabels = Object.keys(bookingFrequencyData).sort((a, b) => new Date(a) - new Date(b));
+        var bookingFrequencyCounts = bookingFrequencyLabels.map(label => bookingFrequencyData[label]);
 
         var bookingFrequencyChartCtx = document.getElementById('bookingFrequencyChart').getContext('2d');
         var bookingFrequencyChart = new Chart(bookingFrequencyChartCtx, {
@@ -204,8 +202,8 @@
                     y: {
                         beginAtZero: true
                     }
-                }
-            }
+                }
+            }
         });
     </script>
 </body>
